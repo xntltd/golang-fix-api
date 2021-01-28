@@ -1,0 +1,4 @@
+.idea/
+.vscode/
+store/
+fix_api.go
