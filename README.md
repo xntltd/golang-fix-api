@@ -38,7 +38,6 @@ func main() {
 	for {
 		print(<- f.RespChan)
 	}
-	//f.Stop()
 }
 ```
 
