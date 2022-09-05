@@ -6,13 +6,13 @@ import (
 	//"github.com/beevik/guid"
 	"github.com/quickfixgo/enum"
 	"github.com/quickfixgo/field"
-	fix44slr "github.com/quickfixgo/fix44/SecurityListRequest"
 	fix44mdr "github.com/quickfixgo/fix44/marketdatarequest"
 	fix44nos "github.com/quickfixgo/fix44/newordersingle"
 	fix44ocrr "github.com/quickfixgo/fix44/ordercancelreplacerequest"
 	fix44cxl "github.com/quickfixgo/fix44/ordercancelrequest"
 	fix44oms "github.com/quickfixgo/fix44/ordermassstatusrequest"
 	fix44osr "github.com/quickfixgo/fix44/orderstatusrequest"
+	fix44slr "github.com/quickfixgo/fix44/securitylistrequest"
 	fix44trq "github.com/quickfixgo/fix44/testrequest"
 	fix44tmr "github.com/quickfixgo/fix44/tradecapturereport"
 	"github.com/quickfixgo/quickfix"
@@ -68,7 +68,6 @@ func queryQuantity(val decimal.Decimal) field.QuantityField {
 func queryPrice(val decimal.Decimal) field.PriceField {
 	return field.NewPrice(val, scale)
 }
-
 
 func queryHeader(h header, targetCompID, senderCompID string) {
 	h.Set(querySenderCompID(senderCompID))
@@ -147,7 +146,7 @@ func queryTestRequest44(requestID string) (msg *quickfix.Message) {
 }
 
 func queryNewOrderSingle44(symbol, orderQty, account, price, stopPx, sendercompID, targetCompID string,
-		ordType enum.OrdType) (msg *quickfix.Message) {
+	ordType enum.OrdType) (msg *quickfix.Message) {
 	query := fix44nos.New(
 		queryNewCloID(generateReqID()),
 		querySide(enum.Side_BUY),
@@ -233,7 +232,7 @@ func querySecurityListRequest44(sendercompID, targetCompID string) (msg *quickfi
 }
 
 func queryTradesCapture44(sendercompID, targetCompID string,
-		startTime, stopTime time.Time) (msg *quickfix.Message) {
+	startTime, stopTime time.Time) (msg *quickfix.Message) {
 	query := quickfix.NewMessage()
 	setReqID(query, generateReqID())
 	query.Body.Set(queryTradeRequestType())
@@ -262,10 +261,9 @@ func queryTradesCaptureStopDate44(
 	return
 }
 
-
-func queryTradeMarginRequest44(symbol, account, currency, sendercompID, 
-	targetCompID  string,
-	quantity, price decimal.Decimal) (msg *quickfix.Message){
+func queryTradeMarginRequest44(symbol, account, currency, sendercompID,
+	targetCompID string,
+	quantity, price decimal.Decimal) (msg *quickfix.Message) {
 	query := quickfix.NewMessage()
 	setReqID(query, generateReqID())
 	//TODO: dublicate
@@ -306,7 +304,7 @@ func queryOrderMassStatusRequest44(sendercompID, targetCompID string,
 	return
 }
 
-func queryMarketDataRequest44(marketDepth int, symbol, 
+func queryMarketDataRequest44(marketDepth int, symbol,
 	sendercompID, targetCompID string) (msg *quickfix.Message) {
 	query := fix44mdr.New(field.NewMDReqID(generateReqID()),
 		field.NewSubscriptionRequestType(enum.SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES),
@@ -315,7 +313,7 @@ func queryMarketDataRequest44(marketDepth int, symbol,
 
 	entryTypes := fix44mdr.NewNoMDEntryTypesRepeatingGroup()
 	entryTypes.Add().SetMDEntryType(enum.MDEntryType_BID)
-	query.SetNoMDEntryTypes(entryTypes, )
+	query.SetNoMDEntryTypes(entryTypes)
 
 	relatedSymGroup := fix44mdr.NewNoRelatedSymRepeatingGroup()
 	relatedSymGroup.Add().SetSymbol(symbol)
